@@ -5,12 +5,11 @@ import numpy as np
 import dlib
 import cv2
 import matplotlib.pyplot as plt
-
 class DetectFace:
     def __init__(self, image):
         # initialize dlib's face detector (HOG-based)
         # and then create the facial landmark predictor
-        self.detector = dlib.get_frontal_face_detector()
+        self.detector = dlib.get_frontal_face_detector() 
         self.predictor = dlib.shape_predictor('../res/shape_predictor_68_face_landmarks.dat')
 
         #face detection part
@@ -44,8 +43,11 @@ class DetectFace:
         idx = 0
         # loop over the face parts individually
         for (name, (i, j)) in face_utils.FACIAL_LANDMARKS_IDXS.items():
-            face_parts[idx] = shape[i:j]
-            idx += 1
+            try :
+                face_parts[idx] = shape[i:j]
+                idx += 1
+            except :
+                print(name)
         face_parts = face_parts[1:5]
         # set the variables
         # Caution: this coordinates fits on the RESIZED image.
@@ -69,7 +71,7 @@ class DetectFace:
         # Create an mask
         mask = np.zeros((crop.shape[0], crop.shape[1]))
         cv2.fillConvexPoly(mask, adj_points, 1)
-        mask = mask.astype(np.bool)
+        mask = mask.astype(np.bool_)
         crop[np.logical_not(mask)] = [255, 0, 0]
 
         return crop
