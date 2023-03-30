@@ -1,8 +1,8 @@
 from personal_color_analysis import personal_color
 import argparse
 import os
-
-
+import dlib
+import cv2
 def main():
     # 인자값 받을 인스턴스 생성
     parser = argparse.ArgumentParser(description = 'Please input your image.')
@@ -28,8 +28,14 @@ def main():
         dirpath = args.dir
         imgs = os.listdir(dirpath)
         for imgpath in imgs:
-            #print(os.path.join(dirpath, imgpath))
-            personal_color.analysis(os.path.join(dirpath, imgpath))
-
+            if imgpath.endswith(".jpeg") or imgpath.endswith(".png") or imgpath.endswith(".jpg") or imgpath.endswith(".PNG"):
+                #print(os.path.join(dirpath, imgpath))
+                img=cv2.imread(os.path.join(dirpath, imgpath))
+                detector = dlib.get_frontal_face_detector()
+                det = detector(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 1)
+                try:
+                    personal_color.analysis(os.path.join(dirpath, imgpath))
+                except : 
+                    print("no face : ", os.path.join(dirpath, imgpath))
 if __name__ == '__main__':
     main()
